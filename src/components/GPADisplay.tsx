@@ -49,7 +49,6 @@ export function GPADisplay({ gpa, goal, showProgress = true }: GPADisplayProps) 
                   backgroundColor: "rgba(124, 58, 237, 0.1)",
                   "--progress-color": progressColor
                 } as React.CSSProperties} 
-                indicatorStyle={{ backgroundColor: progressColor }}
               />
               
               {goal !== undefined && (
