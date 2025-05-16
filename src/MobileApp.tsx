@@ -1,18 +1,15 @@
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import { Course, CourseGrade, GradeStats } from "@/types";
 import { defaultGradePoints, defaultSemesters, gradeLabels, gradeColors } from "@/data/defaultCourses";
 import { calculateGPA, calculateStats } from "@/utils/calculations";
 
-// Create a web-compatible version of React Native components
-const ReactNativeWeb = {
-  View: (props: any) => <div {...props} style={{...styles[props.style] || {}, ...props.style}} />,
-  Text: (props: any) => <span {...props} style={{...styles[props.style] || {}, ...props.style}} />,
-  ScrollView: (props: any) => <div {...props} style={{overflowY: 'auto', ...styles[props.style] || {}, ...props.style}} />,
-  SafeAreaView: (props: any) => <div {...props} style={{...styles[props.style] || {}, ...props.style}} />,
-  TouchableOpacity: (props: any) => <button {...props} onClick={props.onPress} style={{background: 'none', border: 'none', padding: 0, margin: 0, cursor: 'pointer', ...styles[props.style] || {}, ...props.style}} />
-};
+// Web-compatible versions of React Native components
+const View = (props: any) => <div {...props} style={{...styles[props.style] || {}, ...props.style}} />;
+const Text = (props: any) => <span {...props} style={{...styles[props.style] || {}, ...props.style}} />;
+const ScrollView = (props: any) => <div {...props} style={{overflowY: 'auto', ...styles[props.style] || {}, ...props.style}} />;
+const SafeAreaView = (props: any) => <div {...props} style={{...styles[props.style] || {}, ...props.style}} />;
+const TouchableOpacity = (props: any) => <button {...props} onClick={props.onPress} style={{background: 'none', border: 'none', padding: 0, margin: 0, cursor: 'pointer', ...styles[props.style] || {}, ...props.style}} />;
 
 const MobileApp = () => {
   const [semesters, setSemesters] = useState(defaultSemesters);
@@ -93,7 +90,7 @@ const MobileApp = () => {
   const mainGrades = ['O', 'A+', 'A', 'B+', 'B'];
   const extraGrades = ['C', 'P', 'F', 'W', 'I', 'FA'];
 
-  // Use ReactNativeWeb components for web rendering
+  // Use web components for web rendering
   return (
     <div className="safe-area" style={styles.safeArea}>
       <div style={styles.headerContainer}>
