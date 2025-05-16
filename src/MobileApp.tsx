@@ -5,6 +5,15 @@ import { Course, CourseGrade, GradeStats } from "@/types";
 import { defaultGradePoints, defaultSemesters, gradeLabels, gradeColors } from "@/data/defaultCourses";
 import { calculateGPA, calculateStats } from "@/utils/calculations";
 
+// Create a web-compatible version of React Native components
+const ReactNativeWeb = {
+  View: (props: any) => <div {...props} style={{...styles[props.style] || {}, ...props.style}} />,
+  Text: (props: any) => <span {...props} style={{...styles[props.style] || {}, ...props.style}} />,
+  ScrollView: (props: any) => <div {...props} style={{overflowY: 'auto', ...styles[props.style] || {}, ...props.style}} />,
+  SafeAreaView: (props: any) => <div {...props} style={{...styles[props.style] || {}, ...props.style}} />,
+  TouchableOpacity: (props: any) => <button {...props} onClick={props.onPress} style={{background: 'none', border: 'none', padding: 0, margin: 0, cursor: 'pointer', ...styles[props.style] || {}, ...props.style}} />
+};
+
 const MobileApp = () => {
   const [semesters, setSemesters] = useState(defaultSemesters);
   const [currentSemesterId, setCurrentSemesterId] = useState(defaultSemesters[0].id);
@@ -84,95 +93,97 @@ const MobileApp = () => {
   const mainGrades = ['O', 'A+', 'A', 'B+', 'B'];
   const extraGrades = ['C', 'P', 'F', 'W', 'I', 'FA'];
 
+  // Use ReactNativeWeb components for web rendering
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>GPA Calculator</Text>
-        <Text style={styles.subtitleText}>Made with ♥ by Lovable</Text>
-      </View>
+    <div className="safe-area" style={styles.safeArea}>
+      <div style={styles.headerContainer}>
+        <span style={styles.headerText}>GPA Calculator</span>
+        <span style={styles.subtitleText}>Made with ♥ by Lovable</span>
+      </div>
       
-      <ScrollView contentContainerStyle={styles.container}>
+      <div className="scroll-container" style={{...styles.container, overflowY: 'auto'}}>
         {courses.map((course) => (
-          <View key={course.id} style={styles.card}>
-            <Text style={styles.courseName}>
+          <div key={course.id} className="course-card" style={styles.card}>
+            <span style={styles.courseName}>
               {course.name} ({course.credits} {course.credits !== 1 ? 'Credits' : 'Credit'})
-            </Text>
-            <View style={styles.grid}>
+            </span>
+            <div style={styles.grid}>
               {mainGrades.map((grade) => (
-                <TouchableOpacity
+                <button
                   key={grade}
-                  style={[
-                    styles.gridButton,
-                    getGrade(course.id) === grade && [styles.selectedButton, 
-                      {backgroundColor: getColorFromHex(gradeColors[grade] || '#6200EE')}]
-                  ]}
-                  onPress={() => setGrade(course.id, grade)}
+                  style={{
+                    ...styles.gridButton,
+                    ...(getGrade(course.id) === grade ? {...styles.selectedButton, backgroundColor: getColorFromHex(gradeColors[grade] || '#6200EE')} : {})
+                  }}
+                  onClick={() => setGrade(course.id, grade)}
                 >
-                  <Text style={styles.gridText}>{grade}</Text>
-                </TouchableOpacity>
+                  <span style={styles.gridText}>{grade}</span>
+                </button>
               ))}
-              <TouchableOpacity
+              <button
                 style={styles.gridButton}
-                onPress={() => toggleShowMore(course.id)}
+                onClick={() => toggleShowMore(course.id)}
               >
-                <Text style={styles.gridText}>
+                <span style={styles.gridText}>
                   {showMore[course.id] ? '▲' : '▼'}
-                </Text>
-              </TouchableOpacity>
-            </View>
+                </span>
+              </button>
+            </div>
             
             {showMore[course.id] && (
-              <View style={[styles.grid, styles.extraGrid]}>
+              <div style={{...styles.grid, ...styles.extraGrid}}>
                 {extraGrades.map((grade) => (
-                  <TouchableOpacity
+                  <button
                     key={grade}
-                    style={[
-                      styles.gridButton,
-                      getGrade(course.id) === grade && [styles.selectedButton,
-                        {backgroundColor: getColorFromHex(gradeColors[grade] || '#6200EE')}]
-                    ]}
-                    onPress={() => setGrade(course.id, grade)}
+                    style={{
+                      ...styles.gridButton,
+                      ...(getGrade(course.id) === grade ? {...styles.selectedButton, backgroundColor: getColorFromHex(gradeColors[grade] || '#6200EE')} : {})
+                    }}
+                    onClick={() => setGrade(course.id, grade)}
                   >
-                    <Text style={styles.gridText}>{grade}</Text>
-                  </TouchableOpacity>
+                    <span style={styles.gridText}>{grade}</span>
+                  </button>
                 ))}
-              </View>
+              </div>
             )}
             
             {getGrade(course.id) && (
-              <Text style={[styles.gradeLabel, {
+              <span style={{
+                ...styles.gradeLabel,
                 color: getColorFromHex(gradeColors[getGrade(course.id)] || '#FFFFFF')
-              }]}>
+              }}>
                 {gradeLabels[getGrade(course.id)] || getGrade(course.id)} 
                 ({defaultGradePoints[getGrade(course.id)]} points)
-              </Text>
+              </span>
             )}
-          </View>
+          </div>
         ))}
-      </ScrollView>
+      </div>
       
-      <View style={styles.gpaContainer}>
-        <Text style={styles.gpaLabel}>Semester GPA</Text>
-        <Text style={styles.gpaValue}>{gpa.toFixed(2)}/10</Text>
+      <div style={styles.gpaContainer}>
+        <span style={styles.gpaLabel}>Semester GPA</span>
+        <span style={styles.gpaValue}>{gpa.toFixed(2)}/10</span>
         {stats && (
-          <Text style={styles.creditsText}>
+          <span style={styles.creditsText}>
             Completed: {stats.completedCredits}/{stats.totalCredits} credits
-          </Text>
+          </span>
         )}
-      </View>
-    </SafeAreaView>
+      </div>
+    </div>
   );
 };
 
-// Helper function to convert HEX colors to React Native compatible colors
+// Helper function to convert HEX colors to web compatible colors
 const getColorFromHex = (hex: string): string => {
   return hex;
 };
 
-const styles = StyleSheet.create({
+const styles: Record<string, React.CSSProperties> = {
   safeArea: {
     flex: 1,
     backgroundColor: '#121212',
+    height: '100vh',
+    position: 'relative',
   },
   headerContainer: {
     backgroundColor: '#1A1F2C',
@@ -180,13 +191,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 16,
     alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
     borderBottomWidth: 1,
     borderColor: '#333',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
   },
   headerText: {
     color: '#ffffff',
@@ -201,27 +210,24 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     paddingBottom: 100,
+    height: 'calc(100vh - 200px)',
   },
   card: {
     backgroundColor: '#1A1F2C',
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
   },
   courseName: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 12,
+    display: 'block',
   },
   grid: {
+    display: 'flex',
     flexDirection: 'row',
-    flexWrap: 'nowrap',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
@@ -230,12 +236,15 @@ const styles = StyleSheet.create({
   },
   gridButton: {
     flex: 1,
-    marginHorizontal: 3,
-    paddingVertical: 10,
+    margin: '0 3px',
+    padding: '10px 0',
     backgroundColor: '#333',
     borderRadius: 8,
+    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    color: '#fff',
+    cursor: 'pointer',
   },
   selectedButton: {
     backgroundColor: '#9b87f5',
@@ -248,6 +257,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: '#fff',
     fontWeight: '500',
+    display: 'block',
   },
   gpaContainer: {
     position: 'absolute',
@@ -257,13 +267,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#1A1F2C',
     padding: 20,
     borderRadius: 12,
+    display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
   },
   gpaLabel: {
     color: '#ccc',
@@ -274,12 +281,12 @@ const styles = StyleSheet.create({
     color: '#9b87f5',
     fontSize: 28,
     fontWeight: 'bold',
-    marginVertical: 4,
+    margin: '4px 0',
   },
   creditsText: {
     color: '#ccc',
     fontSize: 14,
   }
-});
+};
 
 export default MobileApp;
